@@ -1,6 +1,6 @@
 #ui.R
 shinyUI(fluidPage(
-  titlePanel("Uploading Files"),
+  titlePanel("qPCR analysis"),
   sidebarLayout(
     sidebarPanel(
       tabsetPanel(
@@ -35,10 +35,13 @@ shinyUI(fluidPage(
         ),
         tabPanel("Numerical Results",
                  p('This is the summary of control genes'),
-                 tags$hr(),
                  tableOutput('meanCtrlTable'),
                  tags$hr(),
-                 p('This is the relative expression result (2^-dCt)')
+                 p('This is the M values for multiple endogenous controls'),
+                 tableOutput('mvalues'),
+                 tags$hr(),
+                 p('This is the relative expression result (2^-dCt)'),
+
                  ),
         tabPanel("Graphical Results",
                  h4(textOutput("caption3")),
