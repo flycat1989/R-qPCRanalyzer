@@ -3,7 +3,9 @@ shinyUI(fluidPage(
   titlePanel("Uploading Files"),
   sidebarLayout(
     sidebarPanel(
-      fileInput('file1', 'Choose file to upload',
+      tabsetPanel(
+        tabPanel("File upload info",
+        fileInput('file1', 'Choose file to upload',
                 accept = c(
                   'text/csv',
                   'text/comma-separated-values',
@@ -22,17 +24,23 @@ shinyUI(fluidPage(
                    ','),
       tags$hr()
     ),
+    tabPanel("Setting up parameters",
+    textInput("endoCtrl", "Endogenous Control:", "Actin")
+    )
+    )),
     mainPanel(
       tabsetPanel(
         tabPanel("Uploaded Data",
                  tableOutput('contents')
         ),
         tabPanel("Numerical Results",
-                 h4(textOutput("caption2")),
-                 plotOutput("density"),
-                 htmlOutput("notes2"),
-                 value = 2),
-        tabPanel("Plot Results",
+                 p('This is the summary of control genes'),
+                 tags$hr(),
+                 tableOutput('meanCtrlTable'),
+                 tags$hr(),
+                 p('This is the relative expression result (2^-dCt)')
+                 ),
+        tabPanel("Graphical Results",
                  h4(textOutput("caption3")),
                  plotOutput("genderDensity", height="250px"),
                  verbatimTextOutput("sexDiff"),
