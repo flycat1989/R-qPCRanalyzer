@@ -32,11 +32,4 @@ qPCRcontrol=filter(qPCR, Target %in% controlList)
 controlList=sort(unique(qPCRcontrol$Target))
 
 
-
-
-
-
-
-
-
 qPCR %>% group_by(Sample) %>% summarize(mean(Ct))
