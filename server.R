@@ -17,7 +17,6 @@ shinyServer(function(input, output) {
   })
     
   meanCtrl<-reactive({
-    ctrlGene=as.character(ctrlGene())
     myCtrl=filter(myData(),Target %in% ctrlGene)
     meanCtrl=group_by(myCtrl,Sample,Target)%>% summarize(mean(Ct))
     meanCtrl=as.data.frame(meanCtrl)
@@ -53,13 +52,19 @@ shinyServer(function(input, output) {
   })
   
   normData<-reactive({
-    
+    useInput=input$endoUse
+    ctrlUse=strsplit(useInput,",")[[1]]
+    ctrlUseData=filter(meanCtrl(),Target %in% ctrlUse)
+    controlUseData=ctrlUseData %>% group_by(Sample) %>% summarize(exp(mean(log(meanCt))))
+    colnames(controlUseData)[2]="geoMeanCt"
+    normData=merge(myData(),controlUseData,all.x=TRUE)
+    normData$dCt=normData$Ct-normData$geoMeanCt
   })
   
   
   output$contents <- renderTable(myData())
   output$meanCtrlTable<-renderTable(meanCtrl())
   output$mvalues<-renderTable(as.data.frame(Mvalues()))
-
+  output$normdata<-renderTable(normData())
   
 })

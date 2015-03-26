@@ -25,7 +25,8 @@ shinyUI(fluidPage(
       tags$hr()
     ),
     tabPanel("Setting up parameters",
-    textInput("endoCtrl", "Endogenous Control:", "Actin")
+    textInput("endoCtrl", "Total Endogenous Control:", "Actin")
+    textInput("endoUse","Use Endogenous Control:","Actin")
     )
     )),
     mainPanel(
