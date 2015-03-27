@@ -26,7 +26,8 @@ shinyUI(fluidPage(
         ),
       tabPanel("Setting up parameters",
         textInput("endoCtrl", "Total Endogenous Control:", "Actin"),
-        textInput("endoUse","Use Endogenous Control:","Actin")
+        textInput("endoUse","Use Endogenous Control:","Actin"),
+        actionButton("plotbutton", "Confirm parameters and plot")
         ),
       tabPanel("Download data",
         downloadButton('downloadnumerical', 'Download Normalized Data'),
@@ -47,11 +48,8 @@ shinyUI(fluidPage(
                  tags$hr()
                  ),
         tabPanel("Graphical Results",
-                 h4(textOutput("caption3")),
-                 plotOutput("genderDensity", height="250px"),
-                 verbatimTextOutput("sexDiff"),
-                 htmlOutput("notes3"),
-                 value = 3),
-        id="tabs1")
+                 
+                 value = 3)
+        )
     )
   )))

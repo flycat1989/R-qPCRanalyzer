@@ -1,7 +1,6 @@
 # server.R
 options(shiny.maxRequestSize = 9*1024^2)
-
-
+systemDate=as.character(Sys.Date())
 
 shinyServer(function(input, output) {
   myData<-reactive({
@@ -10,7 +9,16 @@ shinyServer(function(input, output) {
       return(NULL)
    read.csv(inFile$datapath, header = input$header, sep = input$sep,stringsAsFactors=FALSE)
   })
-    
+  
+  
+  sampleList<-reactive({
+    sort(unique(myData()$Sample))
+  })
+  
+  targetList<-reactive({
+    sort(unique(myData()$Target))
+  })
+  
   ctrlGene<-reactive({
     inputctrlGene=input$endoCtrl
     ctrlGene=strsplit(inputctrlGene,",")[[1]]
@@ -26,7 +34,7 @@ shinyServer(function(input, output) {
   })
   
   Mvalues<-reactive({
-    sampleNames=sort(unique(myData()$Sample))
+    sampleNames=as.character(sampleList())
     controlNames=ctrlGene()
     controlData=meanCtrl()
     
@@ -64,9 +72,25 @@ shinyServer(function(input, output) {
     normData=arrange(normData,Target,Sample)
     as.data.frame(normData)
   })
+  
+  observe({
+    if (input$plotbutton > 0){
+      dir.create(systemDate)
+      targetNames=as.character(targetList())
+      for (i in 1:length(targetNames)){
+        currentData=filter(normData(),Target==targetNames[i])
+        currentData$Sample=as.character(currentData$Sample)
+        currentData$Sample=gsub('.{1}$', '', currentData$Sample)
+        fileName=paste0(systemDate,"/",targetNames[i],".png")
+        png(file=fileName)
+        boxplot(relativeExp~Sample,data=currentData,ylim=c(0, 1.1*max(currentData$relativeExp,na.rm=TRUE)),main=targetNames[i],ylab = "Relative Expression")
+        dev.off()
+      }
+    }
+  })
     
   output$contents <- renderTable(myData())
-  output$mvalues<-renderTable(as.data.frame(Mvalues()))
+  output$mvalues<-renderTable(as.data.frame(Mvalues()),digits=4)
   output$normdata<-renderTable(normData(),digits = 4)
   
   
