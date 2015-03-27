@@ -5,7 +5,7 @@ shinyUI(fluidPage(
     sidebarPanel(
       tabsetPanel(
         tabPanel("File upload info",
-        fileInput('file1', 'Choose file to upload',
+          fileInput('file1', 'Choose file to upload',
                 accept = c(
                   'text/csv',
                   'text/comma-separated-values',
@@ -13,21 +13,25 @@ shinyUI(fluidPage(
                   'text/plain',
                   '.csv',
                   '.tsv'
-                )
-      ),
-      tags$hr(),
-      checkboxInput('header', 'Header', TRUE),
-      radioButtons('sep', 'Separator',
+                      )
+                  ),
+          tags$hr(),
+          checkboxInput('header', 'Header', TRUE),
+          radioButtons('sep', 'Separator',
                    c(Comma=',',
                      Semicolon=';',
                      Tab='\t'),
                    ','),
-      tags$hr()
-    ),
-    tabPanel("Setting up parameters",
-    textInput("endoCtrl", "Total Endogenous Control:", "Actin"),
-    textInput("endoUse","Use Endogenous Control:","Actin")
-    )
+          tags$hr()
+        ),
+      tabPanel("Setting up parameters",
+        textInput("endoCtrl", "Total Endogenous Control:", "Actin"),
+        textInput("endoUse","Use Endogenous Control:","Actin")
+        ),
+      tabPanel("Download data",
+        downloadButton('downloadnumerical', 'Download Normalized Data'),
+        downloadButton('downloadgraphical', 'Download Plots')
+        )
     )),
     mainPanel(
       tabsetPanel(

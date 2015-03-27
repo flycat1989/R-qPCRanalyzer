@@ -69,4 +69,11 @@ shinyServer(function(input, output) {
   output$mvalues<-renderTable(as.data.frame(Mvalues()))
   output$normdata<-renderTable(normData(),digits = 4)
   
+  
+  output$downloadnumerical <- downloadHandler(
+    filename = function() { 'Untitled.csv' },
+    content = function(file) {
+      write.csv(normData(), file)
+    }
+  )
 })
