@@ -25,7 +25,7 @@ shinyUI(fluidPage(
       tags$hr()
     ),
     tabPanel("Setting up parameters",
-    textInput("endoCtrl", "Total Endogenous Control:", "Actin")
+    textInput("endoCtrl", "Total Endogenous Control:", "Actin"),
     textInput("endoUse","Use Endogenous Control:","Actin")
     )
     )),
@@ -35,14 +35,12 @@ shinyUI(fluidPage(
                  tableOutput('contents')
         ),
         tabPanel("Numerical Results",
-                 p('This is the summary of control genes'),
-                 tableOutput('meanCtrlTable'),
-                 tags$hr(),
                  p('This is the M values for multiple endogenous controls'),
                  tableOutput('mvalues'),
                  tags$hr(),
                  p('This is the relative expression result (2^-dCt)'),
-
+                 tableOutput('normdata'),
+                 tags$hr()
                  ),
         tabPanel("Graphical Results",
                  h4(textOutput("caption3")),

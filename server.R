@@ -17,6 +17,7 @@ shinyServer(function(input, output) {
   })
     
   meanCtrl<-reactive({
+    ctrlGene=as.character(ctrlGene())
     myCtrl=filter(myData(),Target %in% ctrlGene)
     meanCtrl=group_by(myCtrl,Sample,Target)%>% summarize(mean(Ct))
     meanCtrl=as.data.frame(meanCtrl)
@@ -44,8 +45,8 @@ shinyServer(function(input, output) {
       return(Mj)
     }
         
-    if(length(ctrlGene())<2){
-      Mvalues=NA
+    if(length(ctrlGene())<3){
+      Mvalues="Less than 3 endo controls selected"
     }else{
       Mvalues=sapply(controlNames,MvalueGen)
     }
@@ -59,12 +60,13 @@ shinyServer(function(input, output) {
     colnames(controlUseData)[2]="geoMeanCt"
     normData=merge(myData(),controlUseData,all.x=TRUE)
     normData$dCt=normData$Ct-normData$geoMeanCt
+    normData$relativeExp=1000*2^(-normData$dCt)
+    normData=arrange(normData,Target,Sample)
+    as.data.frame(normData)
   })
-  
-  
+    
   output$contents <- renderTable(myData())
-  output$meanCtrlTable<-renderTable(meanCtrl())
   output$mvalues<-renderTable(as.data.frame(Mvalues()))
-  output$normdata<-renderTable(normData())
+  output$normdata<-renderTable(normData(),digits = 4)
   
 })
