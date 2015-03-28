@@ -25,7 +25,7 @@ shinyUI(fluidPage(
           tags$hr()
         ),
       tabPanel("Setting up parameters",
-        textInput("endoCtrl", "Total Endogenous Control:", "Actin"),
+        textInput("endoCtrl", "Total Endogenous Control (For M value calculation only):", "Actin"),
         textInput("endoUse","Use Endogenous Control:","Actin"),
         actionButton("plotbutton", "Confirm parameters and plot")
         ),
@@ -48,8 +48,8 @@ shinyUI(fluidPage(
                  tags$hr()
                  ),
         tabPanel("Graphical Results",
-                 
-                 value = 3)
+                 uiOutput("plotimages")
+                 )
         )
     )
   )))

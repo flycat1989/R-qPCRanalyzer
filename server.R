@@ -2,6 +2,7 @@
 options(shiny.maxRequestSize = 9*1024^2)
 systemDate=as.character(Sys.Date())
 
+
 shinyServer(function(input, output) {
   myData<-reactive({
     inFile <- input$file1
@@ -63,8 +64,8 @@ shinyServer(function(input, output) {
   normData<-reactive({
     useInput=input$endoUse
     ctrlUse=strsplit(useInput,",")[[1]]
-    ctrlUseData=filter(meanCtrl(),Target %in% ctrlUse)
-    controlUseData=ctrlUseData %>% group_by(Sample) %>% summarize(exp(mean(log(meanCt))))
+    ctrlUseData=filter(myData(),Target %in% ctrlUse)
+    controlUseData=ctrlUseData %>% group_by(Sample) %>% summarize(exp(mean(log(Ct))))
     colnames(controlUseData)[2]="geoMeanCt"
     normData=merge(myData(),controlUseData,all.x=TRUE)
     normData$dCt=normData$Ct-normData$geoMeanCt
@@ -75,29 +76,38 @@ shinyServer(function(input, output) {
   
   observe({
     if (input$plotbutton > 0){
-      dir.create(systemDate)
       targetNames=as.character(targetList())
+      fileName=paste0(systemDate,".png")
+      png(file=fileName,width=3,height=15,units="in",res=1200,pointsize = 6)
+      par(mfrow=c(10,2))
       for (i in 1:length(targetNames)){
         currentData=filter(normData(),Target==targetNames[i])
         currentData$Sample=as.character(currentData$Sample)
         currentData$Sample=gsub('.{1}$', '', currentData$Sample)
-        fileName=paste0(systemDate,"/",targetNames[i],".png")
-        png(file=fileName)
         boxplot(relativeExp~Sample,data=currentData,ylim=c(0, 1.1*max(currentData$relativeExp,na.rm=TRUE)),main=targetNames[i],ylab = "Relative Expression")
-        dev.off()
       }
+      dev.off()
     }
   })
-    
+  
+  
   output$contents <- renderTable(myData())
   output$mvalues<-renderTable(as.data.frame(Mvalues()),digits=4)
   output$normdata<-renderTable(normData(),digits = 4)
   
+  output$plotimages<-renderUI({
+    renderImage({
+      list(src = paste0(systemDate,".png"),
+           contentType = 'image/png',
+           alt = "This is alternate text")
+    })
+  })
+     
   
   output$downloadnumerical <- downloadHandler(
     filename = function() { 'Untitled.csv' },
     content = function(file) {
-      write.csv(normData(), file)
+    write.csv(normData(), file)
     }
   )
 })
