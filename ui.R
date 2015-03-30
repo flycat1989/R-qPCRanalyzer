@@ -1,6 +1,8 @@
 #ui.R
 shinyUI(fluidPage(
   titlePanel("qPCR analysis"),
+  p(h5("Developed by Siqi Liu")),
+  p(h5("Version 1.00")),
   sidebarLayout(
     sidebarPanel(
       tabsetPanel(

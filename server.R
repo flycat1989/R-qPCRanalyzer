@@ -78,17 +78,6 @@ shinyServer(function(input, output) {
   output$mvalues<-renderTable(as.data.frame(Mvalues()),digits=4)
   output$normdata<-renderTable(normData(),digits = 4)
   
-  #output$plotimages<-renderUI({
-  #  imagePath=paste0(systemDate,".png")
-    #renderImage({
-    #  list(src = paste0(systemDate,".png"),
-    #       contentType = 'image/png',
-    #       alt = "This is alternate text")
-    #})
-    #tags$img(scr=imagePath)
-  #})
-  
-  
   output$plotimages<-renderImage({
     input$plotbutton  
     targetNames=as.character(targetList())
