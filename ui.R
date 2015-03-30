@@ -48,7 +48,7 @@ shinyUI(fluidPage(
                  tags$hr()
                  ),
         tabPanel("Graphical Results",
-                 uiOutput("plotimages")
+                 imageOutput("plotimages")
                  )
         )
     )
