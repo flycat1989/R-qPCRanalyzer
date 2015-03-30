@@ -73,36 +73,47 @@ shinyServer(function(input, output) {
     normData=arrange(normData,Target,Sample)
     as.data.frame(normData)
   })
-  
-  observe({
-    if (input$plotbutton > 0){
-      targetNames=as.character(targetList())
-      fileName=paste0(systemDate,".png")
-      png(file=fileName,width=3,height=15,units="in",res=1200,pointsize = 6)
-      par(mfrow=c(10,2))
-      for (i in 1:length(targetNames)){
-        currentData=filter(normData(),Target==targetNames[i])
-        currentData$Sample=as.character(currentData$Sample)
-        currentData$Sample=gsub('.{1}$', '', currentData$Sample)
-        boxplot(relativeExp~Sample,data=currentData,ylim=c(0, 1.1*max(currentData$relativeExp,na.rm=TRUE)),main=targetNames[i],ylab = "Relative Expression")
-      }
-      dev.off()
-    }
-  })
-  
-  
+    
   output$contents <- renderTable(myData())
   output$mvalues<-renderTable(as.data.frame(Mvalues()),digits=4)
   output$normdata<-renderTable(normData(),digits = 4)
   
-  output$plotimages<-renderUI({
-    renderImage({
-      list(src = paste0(systemDate,".png"),
-           contentType = 'image/png',
-           alt = "This is alternate text")
-    })
+  #output$plotimages<-renderUI({
+  #  imagePath=paste0(systemDate,".png")
+    #renderImage({
+    #  list(src = paste0(systemDate,".png"),
+    #       contentType = 'image/png',
+    #       alt = "This is alternate text")
+    #})
+    #tags$img(scr=imagePath)
+  #})
+  
+  
+  output$plotimages<-renderImage({
+    input$plotbutton  
+    targetNames=as.character(targetList())
+    fileName=paste0(systemDate,".png")
+    png(file=fileName,width=5,height=15,units="in",res=1200,pointsize = 6)
+    par(mfrow=c(8,3))
+    for (i in 1:length(targetNames)){
+      currentData=filter(normData(),Target==targetNames[i])
+      currentData$Sample=as.character(currentData$Sample)
+      currentData$Sample=gsub('.{1}$', '', currentData$Sample)
+      boxplot(relativeExp~Sample,data=currentData,ylim=c(0, 1.1*max(currentData$relativeExp,na.rm=TRUE)),main=targetNames[i],ylab = "Relative Expression")
+    }
+    dev.off()
+    
+    isolate(input$file1)
+    isolate(input$endoCtrl)
+    isolate(input$endoUse)
+    
+    list(src = fileName,
+         contentType = 'image/png',
+         width=600,
+         height=1800,
+        alt = "This is alternate text")
   })
-     
+  
   
   output$downloadnumerical <- downloadHandler(
     filename = function() { 'Untitled.csv' },
@@ -110,4 +121,5 @@ shinyServer(function(input, output) {
     write.csv(normData(), file)
     }
   )
+  
 })

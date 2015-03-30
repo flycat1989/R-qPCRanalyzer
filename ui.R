@@ -30,8 +30,7 @@ shinyUI(fluidPage(
         actionButton("plotbutton", "Confirm parameters and plot")
         ),
       tabPanel("Download data",
-        downloadButton('downloadnumerical', 'Download Normalized Data'),
-        downloadButton('downloadgraphical', 'Download Plots')
+        downloadButton('downloadnumerical', 'Download Normalized Data')
         )
     )),
     mainPanel(
@@ -48,7 +47,7 @@ shinyUI(fluidPage(
                  tags$hr()
                  ),
         tabPanel("Graphical Results",
-                 uiOutput("plotimages")
+                 imageOutput("plotimages")
                  )
         )
     )
