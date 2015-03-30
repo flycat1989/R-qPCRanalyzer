@@ -1,7 +1,5 @@
 # server.R
 options(shiny.maxRequestSize = 9*1024^2)
-systemDate=as.character(Sys.Date())
-
 
 shinyServer(function(input, output) {
   myData<-reactive({
@@ -81,7 +79,7 @@ shinyServer(function(input, output) {
   output$plotimages<-renderImage({
     input$plotbutton  
     targetNames=as.character(targetList())
-    fileName=paste0(systemDate,".png")
+    fileName="tempImg.png"
     png(file=fileName,width=5,height=15,units="in",res=1200,pointsize = 6)
     par(mfrow=c(8,3))
     for (i in 1:length(targetNames)){
