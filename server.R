@@ -6,7 +6,7 @@ shinyServer(function(input, output) {
     inFile <- input$file1
     if (is.null(inFile))
       return(NULL)
-   read.csv(inFile$datapath, header = input$header, sep = input$sep,stringsAsFactors=FALSE)
+   myData=read.csv(inFile$datapath, header = input$header, sep = input$sep,stringsAsFactors=FALSE)
   })
   
   
@@ -25,7 +25,9 @@ shinyServer(function(input, output) {
     
   meanCtrl<-reactive({
     ctrlGene=as.character(ctrlGene())
-    myCtrl=filter(myData(),Target %in% ctrlGene)
+    myData=myData()
+    myData$Ct=as.numeric(myData$Ct)
+    myCtrl=filter(myData,Target %in% ctrlGene)
     meanCtrl=group_by(myCtrl,Sample,Target)%>% summarize(mean(Ct))
     meanCtrl=as.data.frame(meanCtrl)
     colnames(meanCtrl)[3]="meanCt"
@@ -62,10 +64,12 @@ shinyServer(function(input, output) {
   normData<-reactive({
     useInput=input$endoUse
     ctrlUse=strsplit(useInput,",")[[1]]
-    ctrlUseData=filter(myData(),Target %in% ctrlUse)
+    myData=myData()
+    myData$Ct=as.numeric(myData$Ct)
+    ctrlUseData=filter(myData,Target %in% ctrlUse)
     controlUseData=ctrlUseData %>% group_by(Sample) %>% summarize(exp(mean(log(Ct))))
     colnames(controlUseData)[2]="geoMeanCt"
-    normData=merge(myData(),controlUseData,all.x=TRUE)
+    normData=merge(myData,controlUseData,all.x=TRUE)
     normData$dCt=normData$Ct-normData$geoMeanCt
     normData$relativeExp=1000*2^(-normData$dCt)
     normData=arrange(normData,Target,Sample)
